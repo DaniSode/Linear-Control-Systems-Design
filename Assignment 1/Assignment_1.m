@@ -117,27 +117,39 @@ u = [v_a; T_e];
 
 % Plotting
 figure
-subplot(3,2,1)
+subplot(3,3,1)
+plot(t_2, x_1(:, 1))
+axis padded
+title('Phi 1'); xlabel('Time [s]'); ylabel('rad')
+subplot(3,3,4)
+plot(t_2, x_1(:, 3))
+axis padded
+title('Phi 2'); xlabel('Time [s]'); ylabel('rad')
+subplot(3,3,7)
+plot(t_2, x_1(:, 5))
+axis padded
+title('Phi 3'); xlabel('Time [s]'); ylabel('rad')
+subplot(3,3,2)
 plot(t_2, x_1(:, 2))
 axis padded
 title('Omega 1'); xlabel('Time [s]'); ylabel('rad/s')
-subplot(3,2,3)
+subplot(3,3,5)
 plot(t_2, x_1(:, 4))
 axis padded
 title('Omega 2'); xlabel('Time [s]'); ylabel('rad/s')
-subplot(3,2,5)
+subplot(3,3,8)
 plot(t_1, y_2(:, 2))
 axis padded
 title('Omega 3'); xlabel('Time [s]'); ylabel('rad/s')
-subplot(3,2,2)
+subplot(3,3,3)
 plot(t_1, y_1(:, 1))
 axis padded
 title('Current'); xlabel('Time [s]'); ylabel('i')
-subplot(3,2,4)
+subplot(3,3,6)
 plot(time, u(1, :))
 axis padded
 title('Input voltage'); xlabel('Time [s]'); ylabel('v')
-subplot(3,2,6)
+subplot(3,3,9)
 plot(time, u(2, :))
 axis padded
 title('External forces'); xlabel('Time [s]'); ylabel('Nm')
