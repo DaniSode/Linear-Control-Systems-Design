@@ -117,26 +117,27 @@ figure
 pzplot(ss_model_1(1,1),'g' ,ss_model_1(1,2),'b',ss_model_1(2,1),'k',ss_model_1(2,2),'b')
 xlim([-1050 50])
 ylim([-1650 1650])
+legend
 title('Pole-Zero Map Case 1')
 saveas(gcf, 'case1', 'epsc')
 figure
-pzplot(ss_model_2(1,1),'g' ,ss_model_2(1,2),'r',ss_model_2(2,1),'k',ss_model_2(2,2),'b')
-xlim([-1000 50])
+pzplot(ss_model_2(1,1),'g' ,ss_model_2(1,2),'b',ss_model_2(2,1),'k',ss_model_2(2,2),'b')
+%xlim([-1000 50])
 ylim([-1750 1750])
 title('Pole-Zero Map Case 2')
 saveas(gcf, 'case2', 'epsc')
 
 % Plot the poles for the cases without external forces
 figure
-pzplot(ss_model_3(1,1),'b' ,ss_model_3(2,1),'r')
+pzplot(ss_model_3)
 xlim([-1050 50])
 ylim([-1650 1650])
 title('Pole-Zero Map Case 1 without external forces')
 saveas(gcf, 'case1ex', 'epsc')
 figure
-pzplot(ss_model_4(1,1),'b' ,ss_model_4(2,1),'r')
+pzplot(ss_model_4)
 xlim([-1000 50])
-ylim([-1750 1750])
+ylim([-1650 1650])
 title('Pole-Zero Map Case 2 without external forces')
 saveas(gcf, 'case2ex', 'epsc')
 
