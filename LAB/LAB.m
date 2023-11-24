@@ -37,6 +37,7 @@ u = [u_1; u_2];
 A_lin = jacobian(eqs, x);
 B_lin = jacobian(eqs, u);
 
+
 % Linearized state equations
 disp('A matrix:'); disp(A_lin)
 disp('B matrix:'); disp(B_lin)
@@ -56,6 +57,12 @@ disp('Linearized B matrix'); disp(B_lin_sub)
 eqs_solve = subs(eqs, x', point);
 u_1_init = double(solve(eqs_solve(1)==0,u_1));
 u_2_init = double(solve(eqs_solve(2)==0,u_2));
+
+% Extras for lambda tuning
+eqs_simple = [(1/(At))*(K_q*u_1 - a*sqrt(2*g*h_1));
+           (1/At)*(K_q*u_2 - a*sqrt(2*g*h_2))];
+A_simple = double(subs(jacobian(eqs_simple, x), x', [14, 14]));
+B_simple = double(subs(jacobian(eqs_simple, u), x', [14, 14]));
 
 %% Exercise 4
 
@@ -98,12 +105,13 @@ sysc = ss(A,B,C,D);
 sysd = c2d(sysc, ts);
 
 Simulation_Time = 300;
-open('controlstructureforassignment.mdl')
-
+open("controlstructureforassignment.mdl")
+sim_model = sim("Simulation.slx", 'ReturnWorkspaceOutputs', 'on');
 
 %% Exercise 7
 disp('Transfer function for the system:')
-transferfcn = tf(sysc)
+sys_simple = ss(A_simple,B_simple,C,D)
+transferfcn = tf(sys_simple)
 
 h10 = 14;
 h20 = 14;
@@ -113,15 +121,13 @@ u20 = u_2_init;
 % Decide these parameters!!!
 %%%%%%%%%%%
 % PI
-Tau = 0.1/4;
-Gain = 1;
+Tau = 1/0.02215;
 lambda = Tau/10;
-Kp = lambda+T;
-Ki = Tau;
+Kp = 0.1572*Tau;
+Ki = Tau/(Kp*lambda);
 
-K_c = lambda/Kp;
-T_i = lambda/Ki;
 % LQR
 Kr = 1;
 Lc = 1;
 %%%%%%%%%%%
+
