@@ -71,22 +71,69 @@ D_new_a = subs(D_a, variables, values);
 C_new_b = subs(C_b, variables, values);
 D_new_b = subs(D_b, variables, values);
 
-%% Controllability 
-syms lam real
+%% a)
+syms lam real positive
 Ilambda = eye(size(A,1))*lam;
 Contr = [A-Ilambda, B];
 
-%Case 1
-Ctr_1 = [B_new, A_new*B_new, A_new^2*B_new, A_new^3*B_new, A_new^4*B_new];
+%CASE 1
+%Controllability
+S = [B_new, A_new*B_new, A_new^2*B_new, A_new^3*B_new, A_new^4*B_new];
+%Observability 
+O = [C_new_a; C_new_a*A_new; C_new_a*A_new^2; C_new_a*A_new^3; ...
+    C_new_a*A_new^4];
+rankS = rank(S);
+rankO = rank(O);
+R_S = rref(S);
+R_O1 = rref(O);
 
-ranken = rank(Ctr_1);
-echolon = rref(Ctr_1);
+%CASE 2
+%Observability 
+O2 = [C_new_b; C_new_b*A_new; C_new_b*A_new^2; C_new_b*A_new^3; ...
+    C_new_b*A_new^4];
+rankO2 = rank(O2);
 
+%% b)
+% If the system is controllable, i.e. ctr1 has full rank it implies that 
+% the system is also stabalizable
 
+%% c
 
-% if rank(Ctr_1)~= 0
-%     fprintf('System with controllability matrix Ctr_1 has rank %g and is controllable!', rank(Ctr_1))
-% else 
-%     fprintf('System with controllability matrix Ctr_1 has rank %g and is NOT controllable', rank(Ctr_1))
-% end
+variables_c = [R; D_1];
+values_c = [1; 20];
+
+% Display new matrices with numerical values
+A_c = subs(A_new, variables_c, values_c);
+B_c = subs(B_new, variables_c, values_c);
+C_c_1 = subs(C_new_a, variables_c, values_c);
+D_c_1 = subs(D_new_a, variables_c, values_c);
+C_c_2 = subs(C_new_b, variables_c, values_c);
+D_c_2 = subs(D_new_b, variables_c, values_c);
+
+%CASE 1
+%Controllability using built in functions 
+S_c = ctrb(double(A_c),double(B_c));
+rank_c1 = rank(S_c);
+%Observability using built in functions 
+O_c_1 = obsv(double(A_c), double(C_c_1));
+rank_oc1 = rank(O_c_1);
+%CASE 2
+%Observability using built in functions
+O_c_2 = obsv(double(A_c), double(C_c_2));
+rank_oc2 = rank(O_c_2);
+
+%% d) (Question: is it allowed to use c2d and compute the discrete time system matrix?)
+syms s
+Ts = 0.001;
+A_d = exp(double(A_c)*Ts)
+
+sys = ss(double(A_c), double(B_c), double(C_c_1), double(D_c_1));
+
+sys_d = c2d(sys, Ts);
+[sys_d_A,~,~,~] = ssdata(sys_d)
+
+%ilaplace(s*eye(size(A_c,1))-double(A_c))
+
+%d)
+sysr = minreal(sys)
 
