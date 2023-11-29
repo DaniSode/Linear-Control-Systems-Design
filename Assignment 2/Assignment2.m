@@ -146,15 +146,18 @@ D_c_2 = subs(D_new_b, variables_c, values_c);
 
 %CASE 1
 %Controllability using built in functions 
+disp('Rank of controllability after substituting both cases:')
 S_c = ctrb(double(A_c),double(B_c));
-rank_c1 = rank(S_c);
+rank_c1 = rank(S_c)
 %Observability using built in functions 
+disp('Rank of observability after substituting for case 1:')
 O_c_1 = obsv(double(A_c), double(C_c_1));
-rank_oc1 = rank(O_c_1);
+rank_oc1 = rank(O_c_1)
 %CASE 2
 %Observability using built in functions
+disp('Rank of observability after substituting for case 2:')
 O_c_2 = obsv(double(A_c), double(C_c_2));
-rank_oc2 = rank(O_c_2);
+rank_oc2 = rank(O_c_2)
 
 %% d) (Question: is it allowed to use c2d and compute the discrete time system matrix?)
 syms s
