@@ -49,8 +49,8 @@ A_lin_sub = subs(A_lin, x', point);
 B_lin_sub = subs(B_lin, x', point);
 
 % Linearized A and B matrices with substitution
-disp('Linearized A matrix'); disp(double(A_lin_sub))
-disp('Linearized B matrix'); disp(double(B_lin_sub))
+disp('Linearized A matrix'); disp(A_lin_sub)
+disp('Linearized B matrix'); disp(B_lin_sub)
 
 % Solve for init
 eqs_solve = subs(eqs, x', point);
@@ -124,8 +124,8 @@ Kp = 0.1572*Tau;
 Ki = Tau/(Kp*lambda);
 Ki = Kp/Tau;
 % Finetuning
-%Kp = 10;
-%Ki = 1.1;
+Kp = 10;
+Ki = 1.1;
 
 
 %% Exercise 8 and 9
@@ -139,11 +139,8 @@ Kr = -pinv(pinv(A-B*Lc)*B);
 %% Exercise 10 
 
 eta = 0.1;
-Atot = [A,zeros(2);-C,zeros(2)];
+Atot = [A, zeros(2); -C, zeros(2)];
 Btot = [B; zeros(2)];
-Qtot = blkdiag(rho*eye(2),eta*eye(2));
-[Lctot,Ktot,Ptot] = lqr(Atot,Btot,Qtot,Qu);
-L = Lctot(:,1:2);
-Li = Lctot(:,3:4);
-Kur = -pinv(C*pinv(A)*B);
-Kxr = pinv(A)*B*pinv((C*pinv(A)*B));
+Qtot = blkdiag(rho * eye(2), eta * eye(2));
+[Lctot,Ktot,Ptot] = lqr(Atot, Btot, Qtot, Qu);
+
