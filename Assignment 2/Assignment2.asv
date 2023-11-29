@@ -131,7 +131,12 @@ disp('Eigenvalues of A:')
 eigen = simplify(eig(simplify(A_new)))
 svd([A_new;C_new_b])        % PBH test with lambda=0, results in rank<=4 (rank deficient)
 
-%% C
+% PBH test
+rank([A_new, B_new])
+rank([A_new; C_new_b])
+rank([A_new; C_new_b])
+
+%% c
 
 variables_c = [R; D_1];
 values_c = [1; 20];
