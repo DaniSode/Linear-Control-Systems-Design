@@ -98,6 +98,8 @@ disp('Echelon matrix for controllability:')
 R_S1 = rref(S1)
 disp('Echelon matrix for observability:')
 R_O1 = rref(O1)
+disp('Values for d and r, case 1:')
+[r1, d1] = solve(det(O1'*O1) == 0, [R, D_1])
 
 %CASE 2
 %Controllability
@@ -114,7 +116,8 @@ disp('Echelon matrix for controllability:')
 R_S2 = rref(S2)
 disp('Echelon matrix for observability:')
 R_O2 = rref(O2)
-
+disp('Values for d and r, case 2:')
+[r2, d2] = solve(det(O2'*O2) == 0, [R, D_1])
 
 %% b)
 % If the system is controllable, i.e. ctr1 has full rank it implies that 
@@ -127,48 +130,76 @@ R_O2 = rref(O2)
 % Full observabiltiy means fully detectable
 % However in case 2 its not full rank which means we have to chekc if its
 % detectable. 
-disp('Eigenvalues of A:')
-eigen = simplify(eig(simplify(A_new)))
-svd([A_new;C_new_b])        % PBH test with lambda=0, results in rank<=4 (rank deficient)
+% https://en.wikipedia.org/wiki/Hautus_lemma
+disp('Rank with PBH test:')
+%eigen = simplify(eig(simplify(A_new)))
+disp('Stability for both cases:')
+rank([A_new,B_new]) 
+disp('Detectability for case 1:')
+rank([A_new;C_new_a]) 
+disp('Detectability for case 2:')
+rank([A_new;C_new_b])        % PBH test with lambda=0, results in rank<=4 (rank deficient)
 
-%% C
+%% c)
 
 variables_c = [R; D_1];
 values_c = [1; 20];
 
 % Display new matrices with numerical values
-A_c = subs(A_new, variables_c, values_c);
-B_c = subs(B_new, variables_c, values_c);
-C_c_1 = subs(C_new_a, variables_c, values_c);
-D_c_1 = subs(D_new_a, variables_c, values_c);
-C_c_2 = subs(C_new_b, variables_c, values_c);
-D_c_2 = subs(D_new_b, variables_c, values_c);
+A_c = double(subs(A_new, variables_c, values_c));
+B_c = double(subs(B_new, variables_c, values_c));
+C_c_1 = double(subs(C_new_a, variables_c, values_c));
+D_c_1 = double(subs(D_new_a, variables_c, values_c));
+C_c_2 = double(subs(C_new_b, variables_c, values_c));
+D_c_2 = double(subs(D_new_b, variables_c, values_c));
 
 %CASE 1
 %Controllability using built in functions 
 disp('Rank of controllability after substituting both cases:')
-S_c = ctrb(double(A_c),double(B_c));
+S_c = ctrb(A_c, B_c);
 rank_c1 = rank(S_c)
+svdS_c = svd(S_c);
+disp('Condition number for the controllability both cases:')
+connumS_c = max(svdS_c)/min(svdS_c)
 %Observability using built in functions 
 disp('Rank of observability after substituting for case 1:')
-O_c_1 = obsv(double(A_c), double(C_c_1));
+O_c_1 = obsv(A_c, C_c_1);
 rank_oc1 = rank(O_c_1)
+svdO_c_1 = svd(O_c_1);
+disp('Condition number for the observabiltiy case 1:')
+connumO_c_1 = max(svdO_c_1)/min(svdO_c_1)
 %CASE 2
 %Observability using built in functions
 disp('Rank of observability after substituting for case 2:')
-O_c_2 = obsv(double(A_c), double(C_c_2));
+O_c_2 = obsv(A_c, C_c_2);
 rank_oc2 = rank(O_c_2)
+svdO_c_2 = svd(O_c_2);
+disp('Condition number for the observabiltiy case 2:')
+connumO_c_1 = max(svdO_c_2)/min(svdO_c_2)
 
 %% d) (Question: is it allowed to use c2d and compute the discrete time system matrix?)
-syms s
+
 Ts = 0.001;
-A_d = expm(double(A_c)*Ts)
+disp('Discrete A matrix:')
+A_d = expm(A_c*Ts)
 
-sys = ss(double(A_c), double(B_c), double(C_c_1), double(D_c_1));
+%% e) 
+fun = @(t) expm(A_c*t)*B_c;
+disp('Discrete B matrix:')
+B_d = integral(fun, 0, Ts, 'ArrayValued', true)
 
+
+% For controlling 
+sys = ss(A_c, B_c, C_c_1, D_c_1);
 sys_d = c2d(sys, Ts);
-[sys_d_A,~,~,~] = ssdata(sys_d)
+[sys_d_A,sys_d_B,sys_d_C,sys_d_D] = ssdata(sys_d);
 
-%d)
-sysr = minreal(sys)
-
+%% f)
+disp('Controllability for the discrete system:')
+Ctrb_mat = ctrb(sys_d);
+rank(Ctrb_mat)
+disp('Observability for the discrete system:')
+Obsv_mat = obsv(sys_d);
+rank(Obsv_mat)
+disp('Eigenvaleus for the discrete system:')
+eig(sys_d)
