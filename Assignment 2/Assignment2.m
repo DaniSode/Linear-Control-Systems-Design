@@ -98,10 +98,10 @@ disp('Echelon matrix for controllability:')
 R_S1 = rref(S1)
 disp('Echelon matrix for observability:')
 R_O1 = rref(O1)
-disp('Values for r and d, case 1:\n')
-[r1, d1] = solve(det(O1'*O1) == 0, [R; D_1]);
+disp('Values for r and d, case 1:')
+[r1, d1] = solve(det(O1'*O1) == 0);
 disp(double(r1));disp(double(d1))
-disp(subs(det(O1'*O1),[R; D_1],[r1;d1]))
+
 %CASE 2
 %Controllability
 S2 = [B_new, A_new*B_new, A_new^2*B_new, A_new^3*B_new, A_new^4*B_new];
@@ -136,6 +136,8 @@ disp('Stability for both cases:')
 rank([A_new,B_new]) 
 disp('Detectability for case 1:')
 rank([A_new;C_new_a]) 
+disp('Detectability for case 1 when using special case:')
+subs(rank([A_new;C_new_a]),[R;D_1],[r1;d1])
 disp('Detectability for case 2:')
 rank([A_new;C_new_b])        % PBH test with lambda=0, results in rank<=4 (rank deficient)
 
