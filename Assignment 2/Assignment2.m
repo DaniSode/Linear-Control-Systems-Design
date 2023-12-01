@@ -209,4 +209,12 @@ Obsv_mat = obsv(sys_d);
 rank(Obsv_mat)
 format long
 disp('Eigenvaleus for the discrete system:')
-eig(sys_d)
+
+eigen = eig(sys_d)
+
+p = nsidedpoly(1000);
+plot(p, 'FaceColor', 'r')
+axis equal
+hold on 
+plot(eigen, 'ok', 'MarkerFaceColor', 'k')
+
