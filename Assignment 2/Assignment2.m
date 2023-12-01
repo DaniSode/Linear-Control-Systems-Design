@@ -16,8 +16,8 @@ clear all; close all; clc
 %% Definitions
 
 % Definitions of variables as syms
-syms i_a v_a R L K_E K_T omega_1 omega_2 omega_3 phi_1 phi_2 phi_3 J_1 J_2 D_1 D_2 B_f T_e real
-syms i_a_dot omega_1_dot omega_2_dot omega_3_dot phi_1_dot phi_2_dot phi_3_dot real
+syms i_a v_a R L K_E K_T omega_1 omega_2 omega_3 phi_1 phi_2 phi_3 J_1 J_2 D_1 D_2 B_f T_e real positive
+syms i_a_dot omega_1_dot omega_2_dot omega_3_dot phi_1_dot phi_2_dot phi_3_dot real positive
 T_a = K_T*i_a;
 e_a = K_E*omega_1;
 
@@ -98,9 +98,10 @@ disp('Echelon matrix for controllability:')
 R_S1 = rref(S1)
 disp('Echelon matrix for observability:')
 R_O1 = rref(O1)
-disp('Values for d and r, case 1:')
-[r1, d1] = solve(det(O1'*O1) == 0, [R, D_1])
-
+disp('Values for r and d, case 1:\n')
+[r1, d1] = solve(det(O1'*O1) == 0, [R; D_1]);
+disp(double(r1));disp(double(d1))
+disp(subs(det(O1'*O1),[R; D_1],[r1;d1]))
 %CASE 2
 %Controllability
 S2 = [B_new, A_new*B_new, A_new^2*B_new, A_new^3*B_new, A_new^4*B_new];
@@ -116,8 +117,6 @@ disp('Echelon matrix for controllability:')
 R_S2 = rref(S2)
 disp('Echelon matrix for observability:')
 R_O2 = rref(O2)
-disp('Values for d and r, case 2:')
-[r2, d2] = solve(det(O2'*O2) == 0, [R, D_1])
 
 %% b)
 % If the system is controllable, i.e. ctr1 has full rank it implies that 
@@ -158,24 +157,23 @@ D_c_2 = double(subs(D_new_b, variables_c, values_c));
 disp('Rank of controllability after substituting both cases:')
 S_c = ctrb(A_c, B_c);
 rank_c1 = rank(S_c)
-svdS_c = svd(S_c);
 disp('Condition number for the controllability both cases:')
-connumS_c = max(svdS_c)/min(svdS_c)
+connumS_c = cond(S_c)
+
 %Observability using built in functions 
 disp('Rank of observability after substituting for case 1:')
 O_c_1 = obsv(A_c, C_c_1);
 rank_oc1 = rank(O_c_1)
-svdO_c_1 = svd(O_c_1);
 disp('Condition number for the observabiltiy case 1:')
-connumO_c_1 = max(svdO_c_1)/min(svdO_c_1)
+connumO_c_1 = cond(O_c_1)
+
 %CASE 2
 %Observability using built in functions
 disp('Rank of observability after substituting for case 2:')
 O_c_2 = obsv(A_c, C_c_2);
 rank_oc2 = rank(O_c_2)
-svdO_c_2 = svd(O_c_2);
 disp('Condition number for the observabiltiy case 2:')
-connumO_c_1 = max(svdO_c_2)/min(svdO_c_2)
+connumO_c_2 = cond(O_c_2)
 
 %% d) (Question: is it allowed to use c2d and compute the discrete time system matrix?)
 
@@ -201,5 +199,6 @@ rank(Ctrb_mat)
 disp('Observability for the discrete system:')
 Obsv_mat = obsv(sys_d);
 rank(Obsv_mat)
+format long
 disp('Eigenvaleus for the discrete system:')
 eig(sys_d)
