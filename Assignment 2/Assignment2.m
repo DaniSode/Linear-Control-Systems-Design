@@ -98,16 +98,13 @@ disp('Echelon matrix for controllability:')
 R_S1 = rref(S1)
 disp('Echelon matrix for observability:')
 R_O1 = rref(O1)
-<<<<<<< Updated upstream
 disp('Values for r and d, case 1:')
 [r1, d1] = solve(det(O1'*O1) == 0);
 disp(double(r1));disp(double(d1))
-
-=======
 disp('Values for r and d, case 1:\n')
 [r1, d1] = solve(det(O1'*O1) == 0)
 disp(subs(det(O1'*O1),[R; D_1],[r1;d1]))
->>>>>>> Stashed changes
+
 %CASE 2
 %Controllability
 S2 = [B_new, A_new*B_new, A_new^2*B_new, A_new^3*B_new, A_new^4*B_new];
@@ -209,7 +206,6 @@ Obsv_mat = obsv(sys_d);
 rank(Obsv_mat)
 format long
 disp('Eigenvaleus for the discrete system:')
-
 eigen = eig(sys_d)
 
 p = nsidedpoly(1000);
