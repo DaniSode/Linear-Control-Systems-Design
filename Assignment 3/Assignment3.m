@@ -89,7 +89,7 @@ D_c_2 = double(subs(D_new_b, variables_c, values_c));
 
 
 % For controlling 
-h = 0.01;
+h = 0.001;
 sys = ss(A_c, B_c, C_c_1, D_c_1);
 sys_d = c2d(sys, h);
 [Ad,Bd,C,D] = ssdata(sys_d)
@@ -111,18 +111,15 @@ Nn = 0;
 new_sysd = ss(Ad,[Bd Bd],C,0,h)
 
 % Kalman filter
-[~, K, P] = kalman(new_sysd, Qw, Qv,Nn);
+[~, K, P] = kalman(new_sysd, Qw, Qv,Nn)
 
 
 observer_eigin = eig(Ad-K*C)
 
-
-
-
-Qx = diag([ 1, 10, 1, 1/1000, 1/1000, 11]);
+Qx = diag([ 1, 10, 1, 1/1000, 1/1000, 16]);
 Qu = 100000*diag([1, 1]);
 
-
+open('Assignment3_system.slxc')
 
 
 
